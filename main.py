@@ -1,6 +1,8 @@
 import re
 import os
 import sys
+import datetime
+from datetime import date
 
 DRG_CURR_PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 DRG_TEST_PATH = DRG_CURR_PATH + "\Test"
@@ -9,6 +11,7 @@ print (DRG_TEST_PATH)
 
 # Read source data from input_data.txt, located in path: report.txt
 os.chdir(DRG_TEST_PATH)
+
 
 read_file = open("input_data.txt", "r")
 write_file = open("report.txt", "w")
@@ -34,10 +37,17 @@ def DRG_ParseLine(input_line):
 	print (input_line)
 	if re.match("rank", input_line ):
 		rank_list = re.split('/', input_line)
-		print (rank_list)
+		#print (rank_list)
+		
+		day = datetime.date(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day) \
+		- datetime.timedelta(1)
+		name = rank_list[0].split(":")[-1]
+
+		titleStr = str(day) + name + "销售与排名\n"
+		#titleStr = rank_list[0] + "销售与排名\n"
 		return_line = DRG_GetOutputLine(rank_list[1], rank_list[2], rank_list[3], rank_list[4])
     
-		return return_line
+		return titleStr + return_line
 	return ""
 
 # Read each line and do transforming
