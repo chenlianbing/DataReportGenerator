@@ -1,8 +1,8 @@
-import re
+# -*- coding: UTF-8 -*-
+
 import os
 import sys
-import datetime
-from datetime import date
+from textline_proc import DRG_GetOutputLine, DRG_ParseLine
 
 DRG_CURR_PATH = os.path.abspath(os.path.dirname(sys.argv[0]))
 DRG_TEST_PATH = DRG_CURR_PATH + "\Test"
@@ -15,40 +15,6 @@ os.chdir(DRG_TEST_PATH)
 
 read_file = open("input_data.txt", "r")
 write_file = open("report.txt", "w")
-
-# output sentences
-def DRG_GetOutputLine(sales, order, rank, compareRank):
-	salesStr = "销售额 " + sales +"元。"
-	orderStr = "销售笔数 " + order + " 笔。"
-	rankStr = "排名 " + rank + " 名。"
-	
-	intComRank = int(compareRank)
-	if (intComRank > 0):
-		rankCompareStr = "排名相比前一天上升 " + str(intComRank) + " 名。"
-	elif (intComRank == 0):
-		rankCompareStr = "排名与前一天持平。"
-	else:
-		rankCompareStr = "排名相比前一天降低 " + str(-intComRank) + " 名。"	
-	
-	return (salesStr + orderStr + rankStr + rankCompareStr)
-	
-# Parse function
-def DRG_ParseLine(input_line):
-	print (input_line)
-	if re.match("rank", input_line ):
-		rank_list = re.split('/', input_line)
-		#print (rank_list)
-		
-		day = datetime.date(datetime.date.today().year, datetime.date.today().month, datetime.date.today().day) \
-		- datetime.timedelta(1)
-		name = rank_list[0].split(":")[-1]
-
-		titleStr = str(day) + name + "销售与排名\n"
-		#titleStr = rank_list[0] + "销售与排名\n"
-		return_line = DRG_GetOutputLine(rank_list[1], rank_list[2], rank_list[3], rank_list[4])
-    
-		return titleStr + return_line
-	return ""
 
 # Read each line and do transforming
 for read_line in read_file:
