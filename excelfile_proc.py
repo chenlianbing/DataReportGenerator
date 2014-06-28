@@ -38,13 +38,13 @@ def getProductName(title):
 # line[2] : product title
 # line[6] : sales
 # line[8] : order
-# format: rank: 星星@13074.28@114@1/5/2@-1
+# format: rank:星星@13074.28@114@1/5/2@-1
 def getProductData(line):
 	productName = getProductName(line[2])
 	productSale = line[6]
 	productOrder = line[8]
 	
-	return ("rank: " + productName + "@" + productSale + "@" + productOrder + "@")
+	return ("rank:" + productName + "@" + productSale + "@" + productOrder + "@")
 	
 
 # Process the csv file, and format the product data, all the formated
@@ -62,6 +62,25 @@ def DRG_GetProductInfo(filename):
 		
 	return True
 	
+
+def getRankInfoByName(productName, sheetHandle):
+	table = sheetHandle.sheets()[0]
+	productList = table.row_values(0)
+	
+	statDate = DRG_GetStatisticDate();
+	for i in range(len(productList)):
+		print (productList[i])
+	
 # Process the csv file, and get rank info from EXCEL file
 def DRG_GetRankInfo(filename, productList):
+	sheetHandle = xlrd.open_workbook(filename)
+	
+	for item in productList:
+		header = item.split("@")[0]
+		if (header.find("rank") >= 0):
+			productName = header.split(":")[-1]
+			rankInfo = getRankInfoByName(productName, sheetHandle)
+			
+			print ("In DRG_GetRankInfo", productName)
+
 	pass
