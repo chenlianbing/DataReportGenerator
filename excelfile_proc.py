@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import csv
 import xlrd
+import comm
 
 DBG_ConfigProductTitle = ['田园成品窗帘 隔热全遮光布 客厅卧室定制遮阳窗帘布特价清仓星星',\
 						 '窗帘遮光布料成品宜家田园卧室客厅定制飘窗帘布窗纱特价清仓波点',\
@@ -62,14 +63,44 @@ def DRG_GetProductInfo(filename):
 		
 	return True
 	
-
+def addRankInfo(productName, rankInfo):
+	for i in range(len(DBG_ConfigProductData)):
+		if (DBG_ConfigProductData[i].find(productName) >= 0):
+			DBG_ConfigProductData[i] = DBG_ConfigProductData[i] + rankInfo
+			#print ("in addRankInfo", productName, DBG_ConfigProductData[i])	
+	
+def searchRankInfo(productName, x, y, table):
+	currentRankInfo = table.cell(x,y).value
+	#print ("in searchRankInfo currentRankInfo=", currentRankInfo, x, y)
+	lastRankInfo = table.cell(x-1,y).value
+	#print ("in searchRankInfo lastRankInfo=", lastRankInfo, x, y)
+	
+	curRankArray = currentRankInfo.split("/")
+	lstRankArray = lastRankInfo.split("/")
+	
+	curRank = (int(curRankArray[0])-1)*13*4 + (int(curRankArray[1])-1)*4 + int(curRankArray[2])
+	lstRank = (int(lstRankArray[0])-1)*13*4 + (int(lstRankArray[1])-1)*4 + int(lstRankArray[2])
+	comRank = curRank - lstRank
+	
+	return (currentRankInfo + "@" + str(comRank))
+	
+	
 def getRankInfoByName(productName, sheetHandle):
 	table = sheetHandle.sheets()[0]
 	productList = table.row_values(0)
+	dateList = table.col_values(1)
 	
-	statDate = DRG_GetStatisticDate();
-	for i in range(len(productList)):
-		print (productList[i])
+	statDate = comm.DRG_GetStatisticDate();
+	print (statDate)
+	for j in range(len(productList)):
+		if (productName == productList[j]):	
+			print ("getRankInfoByName: find product", productName, j)
+			for i in range(len(dateList)):
+				if (statDate == dateList[i]):
+					#print("getRankInfoByName: find product", productName, "locate at",i , j)
+					return searchRankInfo(productName, i, j, table)
+			
+	return ""	
 	
 # Process the csv file, and get rank info from EXCEL file
 def DRG_GetRankInfo(filename, productList):
@@ -80,7 +111,7 @@ def DRG_GetRankInfo(filename, productList):
 		if (header.find("rank") >= 0):
 			productName = header.split(":")[-1]
 			rankInfo = getRankInfoByName(productName, sheetHandle)
-			
-			print ("In DRG_GetRankInfo", productName)
+			addRankInfo(productName, rankInfo)
+			#print ("In DRG_GetRankInfo", productName, rankInfo)
 
 	pass
