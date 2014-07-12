@@ -4,6 +4,7 @@ import os
 import sys
 import textline_proc
 import excelfile_proc
+import comm
 
 #from textline_proc import textline_proc.DRG_GetOutputLine, DRG_ParseLine
 #from excelfile_proc import DRG_GetProductInfo, DRG_GetRankInfo, DBG_ConfigProductData
@@ -15,18 +16,22 @@ print (DRG_TEST_PATH)
 os.chdir(DRG_TEST_PATH)
 
 # Stage I: Read data from EXCEL file, and write to input_data.txt
-procRes = excelfile_proc.DRG_GetProductInfo("baobei-20140618.csv")
-if (procRes == False):
+salesTableName = comm.DRG_GetSalesTableName()
+bRes = excelfile_proc.DRG_GetProductInfo(salesTableName)
+if (bRes == False):
 	print ("Err.")
-else:
-	for item in excelfile_proc.DBG_ConfigProductData:
-		print (item)
+	sys.exit()
 	
 procRes = excelfile_proc.DRG_GetRankInfo("销量排名记录.xls", excelfile_proc.DBG_ConfigProductData)	
 if (procRes == False):
 	print ("Err.")
+	sys.exit()
 	
-	'''
+write_file = open("input_data.txt", "w")
+for item in excelfile_proc.DBG_ConfigProductData:
+	write_file.write(os.linesep + item)	
+write_file.close()
+	
 # Stage II: Parse data from input_data and write to report.txt
 read_file = open("input_data.txt", "r")
 write_file = open("report.txt", "w")
@@ -37,9 +42,9 @@ for read_line in read_file:
 	
 	if(out_line != "Invalid Line"):
 		print (out_line)
-		write_file.write("\r\n" + out_line)
+		write_file.write('\n' + out_line + '\n')
 
 # Close the opened file
 write_file.close()
 read_file.close()
-'''
+
