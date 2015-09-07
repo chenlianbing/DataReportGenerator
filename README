@@ -1,19 +1,4 @@
 
 README FILE:
 
-# Date: created at 2014-6-6
-# Name: chenlianbing
-# Note: This is my first python-learning project, it just do basic txt file parse work and generat txt file in fix
-#       format. Five iteration has been arranged to finish this project, they are as follow:
-#
-# 		Iteration I: 
-#		absolute directory read and write, support fixed format data file parse.
-#
-# 		Iteration II: Implement relative path operation.
-#
-# 		Iteration III: Support EXCEL file read.
-#
-# 		Iteration IV: Support image file read.
-#
-# 		Iteration V: Support GUI.
-#
+From now on, this project is for code collections. so, the contents may be unordered and have nothing to do with each other.
